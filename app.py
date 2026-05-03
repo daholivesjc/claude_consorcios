@@ -895,7 +895,7 @@ def main() -> None:
     if "session_id" not in st.session_state:
         st.session_state.session_id = str(uuid.uuid4())
     if "selected_model_name" not in st.session_state:
-        st.session_state.selected_model_name = list(MODELOS.keys())[0]
+        st.session_state.selected_model_name = "💎 Gemini 2.0 Flash"
     if "temperatura" not in st.session_state:
         st.session_state.temperatura = 0.0
 
