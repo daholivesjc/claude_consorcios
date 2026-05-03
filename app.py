@@ -897,7 +897,7 @@ def main() -> None:
     if "selected_model_name" not in st.session_state:
         st.session_state.selected_model_name = list(MODELOS.keys())[0]
     if "temperatura" not in st.session_state:
-        st.session_state.temperatura = 0.3
+        st.session_state.temperatura = 0.0
 
     # ── Sidebar ───────────────────────────────────────────────────────────────
     with st.sidebar:
