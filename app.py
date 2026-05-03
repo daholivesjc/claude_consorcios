@@ -567,18 +567,24 @@ def execute_tool(name: str, inputs: dict) -> str:
 
 # ── Helpers de API ────────────────────────────────────────────────────────────
 
+def get_api_key(key_name: str) -> str:
+    """Busca chave de API em st.secrets (Streamlit Cloud) ou variáveis de ambiente (local)."""
+    try:
+        return st.secrets[key_name]
+    except KeyError:
+        api_key = os.environ.get(key_name)
+        if not api_key:
+            st.error(f"❌ {key_name} não encontrada. Configure em Secrets do Streamlit Cloud ou no arquivo .env")
+            st.stop()
+        return api_key
+
+
 def get_client(model: str) -> OpenAI:
     if model.startswith("groq/"):
-        api_key = os.environ.get("GROQ_API_KEY")
-        if not api_key:
-            st.error("GROQ_API_KEY não encontrada no arquivo .env")
-            st.stop()
+        api_key = get_api_key("GROQ_API_KEY")
         return OpenAI(base_url="https://api.groq.com/openai/v1", api_key=api_key)
 
-    api_key = os.environ.get("OPEN_ROUTER")
-    if not api_key:
-        st.error("OPEN_ROUTER não encontrada no arquivo .env")
-        st.stop()
+    api_key = get_api_key("OPEN_ROUTER")
     return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
 
 
