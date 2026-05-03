@@ -6,6 +6,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 ENV/
 build/
 develop-eggs/
@@ -43,6 +44,5 @@ MANIFEST
 .DS_Store
 Thumbs.db
 
-# Project
-.claude/dev/logs/
-.claude/dev/progress/
+# Claude Code
+.claude/
