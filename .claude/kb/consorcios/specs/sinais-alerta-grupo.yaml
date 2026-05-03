@@ -1,0 +1,139 @@
+# Sinais de Alerta — Auditoria de Grupo de Consórcio
+#
+# MCP Validated: 2026-05-02
+# Fonte: docs/analise_metodo_jornada.md §4 (sinais de alerta) e §5 (recomendações)
+#
+# Cada sinal contém:
+#   id              - identificador único
+#   titulo          - descrição curta
+#   gravidade       - baixa | media | alta | critica
+#   onde_aparece    - contexto típico onde o sinal se manifesta
+#   sintoma         - comportamento ou estrutura observável
+#   por_que         - explicação do efeito real
+#   reacao          - ação recomendada
+#   fonte           - localização específica em docs/
+
+version: "1.0"
+last_updated: "2026-05-02"
+
+sinais:
+  - id: meia_parcela_geral
+    titulo: Grupo onde todos pagam meia parcela
+    gravidade: alta
+    onde_aparece: ficha_do_grupo
+    sintoma: |
+      Estrutura comercializada com "meia parcela" como modelo padrão para todos
+      os cotistas, em vez de exceção pontual.
+    por_que: |
+      Arrecadação mensal cai pela metade. Como as contemplações dependem do caixa
+      do grupo, as entregas/mês também caem proporcionalmente. O grupo se torna
+      deficitário em relação à promessa contratual.
+    reacao: descartar
+    fonte: "analise_metodo_jornada.md §4 item 1"
+
+  - id: grupo_grande_um_sorteio
+    titulo: Milhares de cotas com apenas 1 sorteio/mês
+    gravidade: alta
+    onde_aparece: ficha_do_grupo
+    sintoma: |
+      Grupos com 1.500+ cotas e somente 1 sorteio mensal.
+    por_que: |
+      Pelo cálculo (sorteios/mês × prazo) ÷ cotas, o % sorteado cai abaixo de 10%.
+      Quem entra esperando ser contemplado por sorteio tem chance ínfima.
+    reacao: |
+      Calcular o % sorteado; se < 10%, descartar a menos que haja estratégia
+      explícita de lance.
+    fonte: "analise_metodo_jornada.md §4 item 2"
+
+  - id: meia_parcela_taxa_cheia
+    titulo: Meia parcela com taxa cobrada sobre crédito cheio
+    gravidade: alta
+    onde_aparece: contrato_de_adesao
+    sintoma: |
+      Cotista paga meia parcela mas a taxa de administração contratual incide
+      sobre o valor integral do crédito.
+    por_que: |
+      Cotista arca com o dobro de taxa relativa: paga taxa sobre R$X enquanto
+      operacionalmente possui apenas R$X/2 de crédito útil ou cobertura.
+    reacao: descartar
+    fonte: "analise_metodo_jornada.md §4 item 3"
+
+  - id: promessa_contemplacao_rapida
+    titulo: Promessa de contemplação em 3–6 meses via lance fixo/fidelidade
+    gravidade: media
+    onde_aparece: discurso_comercial
+    sintoma: |
+      Vendedor garante (ou sugere fortemente) contemplação em janela curta
+      (3 a 6 meses) com base em "estratégia de lance fixo" ou "fidelidade".
+    por_que: |
+      Contemplação por lance depende de competição com outros cotistas e do
+      caixa do grupo. Garantia de prazo é prática enganosa.
+    reacao: |
+      Pedir histórico de contemplações por lance fixo/fidelidade dos últimos
+      12 meses. Se ausente ou inconsistente, descartar.
+    fonte: "analise_metodo_jornada.md §4 item 4"
+
+  - id: dobre_credito_embutido
+    titulo: '"Dobre seu crédito" usando 50% de embutido'
+    gravidade: critica
+    onde_aparece: discurso_comercial
+    sintoma: |
+      Consultor oferece crédito nominal de R$1M com 50% embutido para cliente
+      que queria R$500k, alegando "alavancagem".
+    por_que: |
+      Quando todos no grupo usam embutido, é necessário ~30% adicional do bolso
+      sobre R$1M (R$300k) para vencer lances livres saturados, alavancando
+      apenas R$200k de crédito efetivo. O cliente paga taxa de administração
+      sobre R$1M para movimentar R$200k. Administradora e consultor ganham
+      comissão sobre o crédito cheio.
+    reacao: |
+      Recusar a oferta. Pedir simulação para o crédito efetivamente desejado,
+      sem embutido, e comparar custos totais e tempos médios de contemplação.
+      Ver patterns/armadilha-lance-embutido.md.
+    fonte: "analise_metodo_jornada.md §4 item 5"
+
+  - id: lance_embutido_em_lance_livre
+    titulo: Uso de lance embutido em modalidade de lance livre
+    gravidade: alta
+    onde_aparece: politica_de_lance_do_grupo
+    sintoma: |
+      Grupo permite (ou consultor sugere) usar embutido junto com lance livre.
+    por_que: |
+      Em lance livre, o efeito de saturação inflaciona os percentuais
+      vencedores. O cotista termina pagando taxa sobre crédito que não usa.
+      Lance embutido é modalidade de pagamento, não tipo de lance — usá-lo em
+      lance livre desbalanceia o equilíbrio competitivo do grupo.
+    reacao: |
+      Evitar embutido em lance livre. Se for absolutamente necessário, considerar
+      apenas em lance fixo, onde o percentual é determinístico.
+    fonte: "analise_metodo_jornada.md §5"
+
+  - id: historico_apenas_imagem
+    titulo: Histórico de contemplações apresentado apenas como imagem ilustrativa
+    gravidade: media
+    onde_aparece: material_de_venda
+    sintoma: |
+      Vendedor mostra "quadro de contemplações" ou "caso real" em material
+      gráfico, sem dados auditáveis (planilha, extrato oficial, número de grupo
+      verificável).
+    por_que: |
+      Sem dado numérico verificável, não é possível conferir se a entrega real
+      do grupo bate com a entrega esperada (cotas ÷ prazo).
+    reacao: |
+      Tratar o grupo como se a entrega real estivesse 30% abaixo da esperada
+      (precaução) e descartar até obter dados auditáveis.
+    fonte: "analise_metodo_jornada.md §7"
+
+  - id: administradora_nao_listada_bcb
+    titulo: Administradora sem autorização do Banco Central ou sem associação à ABAC
+    gravidade: critica
+    onde_aparece: due_diligence
+    sintoma: |
+      Empresa não consta no Ranking de Administradoras de Consórcio do BCB ou
+      não é associada à ABAC.
+    por_que: |
+      Operar consórcio sem autorização do BCB é irregular. Falta de associação
+      à ABAC retira camada adicional de fiscalização setorial e código de
+      conduta.
+    reacao: descartar
+    fonte: "Guia de Mitigação de Riscos...md (Resumo); Relatório §3.1"

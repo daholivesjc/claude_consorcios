@@ -1,0 +1,4 @@
+# ClaudeConsórcios — Especialista em Consórcios (Streamlit + LLM)
+streamlit>=1.30
+openai>=1.40
+python-dotenv>=1.0

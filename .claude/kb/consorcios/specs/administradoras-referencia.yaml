@@ -1,0 +1,174 @@
+# Administradoras de Consórcio — Referência
+#
+# MCP Validated: 2026-05-02
+# Fonte: docs/Relatório de Pesquisa...md §3 e referências [2]–[7]
+#
+# Flags:
+#   tipo:                  independente | banco | corretora_marketplace
+#   autoriza_transferencia:
+#     - true            → conhecida por aceitar cessão de cotas contempladas
+#     - true_com_analise → aceita mediante análise de crédito (regra padrão do mercado)
+#     - intermediado    → trade existe mas é via corretor externo (caso típico de bancos)
+#     - n_a             → corretoras (não administram, fazem marketplace)
+
+version: "1.0"
+last_updated: "2026-05-02"
+
+administradoras:
+  - id: ademicon
+    nome: Ademicon
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - imoveis
+      - veiculos_leves
+      - investimento
+      - aposentadoria_imobiliaria
+    observacoes: |
+      Maior administradora independente do Brasil; 35 anos de atuação.
+      Ecossistema explícito para compra/venda de cotas contempladas.
+      Foco declarado em "Aposentadoria Imobiliária" e investimento.
+    fonte_doc: "Relatório §3.1, ref [3]"
+
+  - id: rodobens
+    nome: Rodobens
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - veiculos_pesados
+      - imoveis
+    observacoes: |
+      Reconhecida por baixas taxas e forte presença em veículos pesados e imóveis.
+    fonte_doc: "Relatório §3.1, ref [4]"
+
+  - id: porto_seguro
+    nome: Porto Seguro
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - automoveis
+      - imoveis
+    observacoes: |
+      Referência em segurança e atendimento.
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: evoy
+    nome: Evoy
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - listada_no_top_ranking_abac_bcb
+    observacoes: |
+      Citada entre as principais do ranking ABAC/BCB.
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: reserva
+    nome: Reserva
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - listada_no_top_ranking_abac_bcb
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: simpala
+    nome: Simpala
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - listada_no_top_ranking_abac_bcb
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: magalu
+    nome: Magalu
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - eletroeletronicos
+      - servicos
+      - listada_no_top_ranking_abac_bcb
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: hs_consorcios
+    nome: HS Consórcios
+    tipo: independente
+    autoriza_transferencia: true_com_analise
+    segmentos_fortes:
+      - listada_no_top_ranking_abac_bcb
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: itau
+    nome: Itaú
+    tipo: banco
+    autoriza_transferencia: intermediado
+    segmentos_fortes:
+      - veiculos_leves
+      - imoveis
+    observacoes: |
+      Possui grande carteira; trade do ágio é tipicamente intermediado por
+      corretores externos, não diretamente pela instituição bancária.
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: bradesco
+    nome: Bradesco
+    tipo: banco
+    autoriza_transferencia: intermediado
+    segmentos_fortes:
+      - veiculos_leves
+      - imoveis
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: santander
+    nome: Santander
+    tipo: banco
+    autoriza_transferencia: intermediado
+    segmentos_fortes:
+      - veiculos_leves
+      - imoveis
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: bb
+    nome: Banco do Brasil (BB Consórcio)
+    tipo: banco
+    autoriza_transferencia: intermediado
+    segmentos_fortes:
+      - veiculos_leves
+      - imoveis
+      - veiculos_pesados
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: caixa
+    nome: Caixa
+    tipo: banco
+    autoriza_transferencia: intermediado
+    segmentos_fortes:
+      - imoveis
+      - veiculos_leves
+    observacoes: |
+      Forte tradição em imóveis. Uso de FGTS é diferencial.
+    fonte_doc: "Relatório §3.1, ref [2]"
+
+  - id: grupo_lume
+    nome: Grupo LuME
+    tipo: corretora_marketplace
+    autoriza_transferencia: n_a
+    segmentos_fortes:
+      - cartas_contempladas
+    observacoes: |
+      Marketplace que conecta vendedores de cotas contempladas a compradores.
+    fonte_doc: "Relatório §3.2, ref [5]"
+
+  - id: tramontana
+    nome: Tramontana Consórcios
+    tipo: corretora_marketplace
+    autoriza_transferencia: n_a
+    segmentos_fortes:
+      - cartas_contempladas
+    fonte_doc: "Relatório §3.2, ref [6]"
+
+  - id: toco
+    nome: Toco Consórcios
+    tipo: corretora_marketplace
+    autoriza_transferencia: n_a
+    segmentos_fortes:
+      - cartas_contempladas
+    fonte_doc: "Relatório §3.2, ref [7]"
