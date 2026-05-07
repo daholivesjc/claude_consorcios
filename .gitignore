@@ -40,6 +40,9 @@ MANIFEST
 .env.local
 .env.*.local
 
+# Streamlit secrets (NUNCA commitar chaves de API)
+.streamlit/secrets.toml
+
 # OS
 .DS_Store
 Thumbs.db

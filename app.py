@@ -113,6 +113,103 @@ Duas ou mais bandeiras → descartar o grupo.
 | Liquidez | Baixa | Alta a média | Alta (bolsa) | Nula |
 | Risco principal | Tempo de espera | Baixo | Mercado | Inadimplência |
 
+## Simulador Venda da Carta — Modelo Ademicon
+
+**Referência:** planilha "Venda da Carta com Lucro" da Ademicon (220 meses, 17 colunas, 3 blocos de simulação).
+
+**Parâmetros padrão:** Crédito R$ 100.000 | Parcela R$ 338/mês | Prazo 220 meses | INCC 6%a.a. | Ágio 25% | CDI 14,2%a.a. | Taxa Adm 24,2% | Lance Embutido 44 parcelas antecipadas.
+
+**Regra INCC:** crédito e parcela sobem 6% a cada 12 meses (meses 13, 25, 37, 49 …)
+```
+Mês  1–12 : Crédito = R$ 100.000  | Parcela ≈ R$ 338
+Mês 13–24 : Crédito = R$ 106.000  | Parcela ≈ R$ 358
+Mês 25–36 : Crédito = R$ 112.360  | Parcela ≈ R$ 379
+Mês 217–220: Crédito = R$ 285.433 | Parcela ≈ R$ 965
+```
+
+**Lance Embutido — fórmula do crédito efetivo:**
+```
+parcela_original  = crédito × (1 + taxa_adm) ÷ prazo
+crédito_embutido  = crédito − parcela_original × 44 parcelas
+→ R$ 100.000 vira ~R$ 75.160 de crédito efetivo (desconto de ~25%)
+```
+
+**Pontos de break-even (parâmetros padrão):**
+- Lance Embutido: lucrativo até o 65°, **prejuízo a partir do 66° mês** (R$ –433)
+- Sorteio: lucrativo até o 90°, **prejuízo a partir do 91° mês** (R$ –12)
+- CDI supera ambas as modalidades a partir do **~63° mês**
+
+**Zonas de Decisão:**
+| Zona | Período | Sorteio ROI | Lance ROI | Recomendação |
+|---|---|---|---|---|
+| VERDE | Até 48° mês | > 67% | > 26% | Vender sem hesitar |
+| AMARELA | 49°–90° (Sorteio) / 49°–65° (Lance) | 38% → ~1% | 3,8% → 0% | Sorteio compensa; Lance com cuidado |
+| VERMELHA | 91°+ (Sorteio) / 66°+ (Lance) | Prejuízo | Prejuízo | Não vender — usar o crédito |
+
+**Marcos quantitativos (parâmetros padrão):**
+| Mês | Total Pago | ROI Sorteio | ROI Lance | ROI CDI |
+|---|---|---|---|---|
+| 1° | R$ 338 | 7.296% | 5.459% | ~1% |
+| 12° | R$ 4.056 | 516% | 363% | 6,3% |
+| 48° | R$ 17.743 | 68% | 26% | 24,4% |
+| 60° | R$ 22.864 | 38% | 3,8% | 29,6% |
+| 66° | R$ 25.578 | 30,8% | **−1,7%** | 32,1% |
+| 91° | R$ 37.603 | **−0,03%** | −24,9% | 41,6% |
+| 120° | R$ 53.461 | −21% | −40,6% | 51,1% |
+
+Use a tool `simular_venda_carta` quando o usuário informar o mês de contemplação e quiser saber se vale a pena vender a carta ou usar o crédito.
+
+## Estratégia do Método — Múltiplas Cartas e Bola de Neve
+
+### Diversificação: N cartas menores > 1 carta grande
+- N cartas de R$ 100.000 têm N× mais probabilidade de contemplação do que 1 carta de R$ 500.000 pelo mesmo aporte mensal total
+- Cada carta contemplada gera lucro independente — não precisa esperar todas para lucrar
+- Período de retorno sensacional: contemplação até o 6° ano (≈ 72 meses)
+- Contemplação entre 7–13 anos: (a) usar crédito para imóvel com aluguel pagando o saldo devedor; ou (b) deixar o crédito investido em fundo de renda fixa, rendendo sobre o capital acumulado (~dobro do investido até ali)
+- Contemplação acima de 13 anos: crédito corrigido pelo INCC ainda supera total pago, mas retorno menos expressivo
+
+### Efeito Bola de Neve
+- Ao vender a carta contemplada, reinvestir o lucro em novas cartas sem aumentar o aporte próprio
+- As novas cartas são pagas com o lucro obtido → mais cartas → mais chances de contemplação → ciclo se acelera
+- Regra: nunca parar de fazer aportes mensais enquanto a estratégia de crescimento de patrimônio estiver ativa
+
+### 3 Critérios de Escolha da Administradora (específicos para trade)
+1. **Junção de cartas de grupos DIFERENTES**: permitir unir créditos de qualquer grupo da administradora para formar valores maiores (R$ 300k, R$ 500k, R$ 1M). Junção apenas dentro do mesmo grupo não é suficiente.
+2. **Volume de cartas no mercado**: dezenas ou centenas de cartas contempladas por mês para tornar a junção viável na prática. Administradoras pequenas ou "digitais" sem histórico são irrelevantes.
+3. **Máximo de modalidades de uso**: imóvel novo, usado, construção, reforma E compra de terreno. Quanto mais usos permitidos, maior o público potencial comprador.
+
+### Regras Operacionais do Método
+- **NÃO dar lance em cota destinada à venda**: lance antecipa pagamentos ao grupo e reduz a margem de lucro → somente dá lance quem vai usar o crédito para comprar imóvel
+- **FGTS**: usar FGTS no consórcio obriga a compra de imóvel — NUNCA permite vender a carta contemplada
+- **Seguro prestamista**: geralmente incluído na prestação; quita o saldo devedor em caso de falecimento ou invalidez permanente — recomendável manter
+- **Cancelamento da cota**: perdas de ~50%+ dos valores amortizados (desconta taxa adm paga + multa + taxa de reposição). Continua concorrendo nos sorteios como "cancelado" para receber de volta. NUNCA cancelar — só investir o que se pode pagar mensalmente por longo prazo
+- **Taxa de administração NÃO é o critério determinante**: o que importa é contemplar cedo e ter liquidez para vender
+
+### Precificação da Carta Contemplada para o Comprador
+- Carta contemplada é precificada como crédito com CET equivalente a **7%–8% a.a.** (~0,6%/mês)
+- Mais barato que qualquer financiamento bancário → vantagem estrutural para o comprador → alta demanda permanente
+- Comprador também inclui: quem tem dificuldade de comprovar renda para financiamento (parcela do consórcio é menor) e quem tem dinheiro à vista mas prefere não se descapitalizar
+
+### Processo de Transferência da Carta Contemplada
+1. Intermediária recebe sinal do comprador confirmando intenção de compra
+2. Administradora avalia documentos e capacidade de pagamento do comprador
+3. Administradora envia e-mail + SMS para validação biométrica e assinatura digital do vendedor
+4. Prazo típico: **2 a 4 semanas** da contemplação até carta transferida e dinheiro na conta do vendedor
+5. Após transferência, vendedor não tem mais nenhuma obrigação com o consórcio
+
+### Sinal de Alerta Adicional — Grupos de Banco
+- Gerentes empurram consórcio em venda casada → cliente obtém o produto que queria e logo cancela o consórcio
+- Alta rotatividade gera arrecadação deficitária → contemplações concentradas no final do prazo → período de menor lucro
+- Exemplo real: grupo com 1.000 participantes com 2.840 desistentes ou excluídos
+
+### INCC — Dados Históricos
+- Média dos últimos 20 anos: **6,3% a.a.**
+- Pico recente: **17% em 2021** (pandemia) — crédito subiu muito mais do que as parcelas pagas no ano, ampliando a margem de lucro
+
+### Por que Consórcio de Imóveis (não veículos)
+- Prazo longo (≥ 10 anos): parcelas menores para o mesmo crédito → margem de lucro maior
+- Prazo curto (veículos): parcelas altas para o mesmo crédito + baixa probabilidade por sorteio = lucro insignificante
+
 ## Regime Jurídico
 - Lei 11.795/2008 regula o sistema de consórcios no Brasil
 - Administradoras precisam de autorização do Banco Central do Brasil
@@ -241,6 +338,102 @@ TOOLS = [
                 "taxa_financiamento_anual_pct": {
                     "type": "number", "default": 12.0,
                     "description": "Taxa de juros do financiamento bancário (% a.a.)"
+                },
+            },
+        },
+    ),
+    _tool(
+        "calcular_multiplas_cartas",
+        (
+            "Analisa a estratégia de múltiplas cartas de consórcio: calcula parcela total mensal, "
+            "fator de probabilidade (N× maior vs 1 carta), estimativa de lucro se 1 carta contemplar "
+            "em cada zona (VERDE/AMARELA/VERMELHA) e efeito bola de neve ao reinvestir o primeiro lucro. "
+            "Use quando o usuário perguntar quantas cartas fazer, qual o aporte necessário, "
+            "ou quiser entender o efeito de diversificar em várias cartas menores."
+        ),
+        {
+            "type": "object",
+            "required": ["numero_cartas", "parcela_por_carta"],
+            "properties": {
+                "numero_cartas": {
+                    "type": "integer",
+                    "description": "Número de cartas de consórcio que o investidor deseja manter simultaneamente"
+                },
+                "parcela_por_carta": {
+                    "type": "number",
+                    "description": "Parcela mensal por carta em R$ (ex: 644 para o plano padrão Rodobens/MegaCombo)"
+                },
+                "valor_credito_por_carta": {
+                    "type": "number",
+                    "description": "Valor do crédito de cada carta em R$ (padrão: 100.000)"
+                },
+                "pct_sorteado_grupo": {
+                    "type": "number",
+                    "description": "% de cotas sorteadas no grupo (padrão: 66 para o plano MegaCombo; 9 para grupos ruins)"
+                },
+                "prazo_meses": {
+                    "type": "integer",
+                    "description": "Prazo do grupo em meses (padrão: 216)"
+                },
+                "agio_pct": {
+                    "type": "number",
+                    "description": "Percentual de ágio esperado na venda (padrão: 25%)"
+                },
+                "incc_anual_pct": {
+                    "type": "number",
+                    "description": "INCC anual projetado (padrão: 6%)"
+                },
+            },
+        },
+    ),
+    _tool(
+        "simular_venda_carta",
+        (
+            "Simula a rentabilidade da venda de carta contemplada no mês informado, usando o modelo Ademicon "
+            "(3 cenários: Sorteio, Lance Embutido e CDI benchmark). Calcula total investido, lucro líquido, "
+            "ROI e classifica a zona de decisão VERDE/AMARELA/VERMELHA. "
+            "Identifica os pontos de break-even (padrão: Lance=66°mês, Sorteio=91°mês) e o mês em que o CDI supera ambos. "
+            "Use quando o usuário informar o mês de contemplação e quiser saber se vale a pena vender ou usar o crédito."
+        ),
+        {
+            "type": "object",
+            "required": ["mes_contemplacao"],
+            "properties": {
+                "mes_contemplacao": {
+                    "type": "integer",
+                    "description": "Mês em que ocorreu (ou ocorrerá) a contemplação (1–220)"
+                },
+                "valor_credito": {
+                    "type": "number",
+                    "description": "Valor do crédito em R$ (padrão: 100.000)"
+                },
+                "parcela": {
+                    "type": "number",
+                    "description": "Parcela mensal inicial em R$ (padrão: 338)"
+                },
+                "prazo_meses": {
+                    "type": "integer",
+                    "description": "Prazo total do grupo em meses (padrão: 220)"
+                },
+                "agio_pct": {
+                    "type": "number",
+                    "description": "Percentual de ágio sobre o crédito no momento da venda, ex: 25 para 25% (padrão: 25)"
+                },
+                "incc_anual_pct": {
+                    "type": "number",
+                    "description": "Correção INCC anual aplicada ao crédito e à parcela (padrão: 6)"
+                },
+                "cdi_anual_pct": {
+                    "type": "number",
+                    "description": "CDI anual para benchmark de renda fixa (padrão: 14,2)"
+                },
+                "taxa_adm_pct": {
+                    "type": "number",
+                    "description": "Taxa de administração total do grupo em % (padrão: 24,2)"
+                },
+                "lance_embutido_parcelas": {
+                    "type": "integer",
+                    "description": "Número de parcelas antecipadas usadas como lance embutido (padrão: 44)"
                 },
             },
         },
@@ -546,6 +739,237 @@ def _exec_comparar_investimentos(
     return "\n".join(linhas)
 
 
+def _exec_calcular_multiplas_cartas(
+    numero_cartas: int,
+    parcela_por_carta: float,
+    valor_credito_por_carta: float = 100_000.0,
+    pct_sorteado_grupo: float = 66.0,
+    prazo_meses: int = 216,
+    agio_pct: float = 25.0,
+    incc_anual_pct: float = 6.0,
+) -> str:
+    parcela_total = numero_cartas * parcela_por_carta
+    credito_total = numero_cartas * valor_credito_por_carta
+    # Probabilidade mensal de cada carta ser sorteada
+    prob_mensal_por_carta = (pct_sorteado_grupo / 100) / prazo_meses
+    # Probabilidade de ao menos 1 ser sorteada em determinado mês
+    prob_1_no_mes = 1 - (1 - prob_mensal_por_carta) ** numero_cartas
+    # Mês esperado até a primeira contemplação (valor esperado)
+    mes_esperado_1a = round(1 / prob_1_no_mes) if prob_1_no_mes > 0 else prazo_meses
+
+    # Calcular lucro estimado para 3 cenários de contemplação usando a lógica do simulador
+    incc = incc_anual_pct / 100
+    def _lucro_no_mes(mes: int) -> tuple[float, float]:
+        c, p, ti = valor_credito_por_carta, parcela_por_carta, 0.0
+        for m in range(1, mes + 1):
+            if m > 1 and (m - 1) % 12 == 0:
+                c *= (1 + incc)
+                p *= (1 + incc)
+            ti += p
+        lucro = c * (agio_pct / 100) - ti
+        roi = lucro / ti * 100 if ti > 0 else 0.0
+        return lucro, roi
+
+    cenarios = [
+        ("🟢 Cedo (3° ano)", 36),
+        ("🟡 Médio (5° ano)", 60),
+        ("🔴 Tarde (8° ano)", 96),
+    ]
+
+    # Efeito bola de neve: com o lucro da 1ª carta, quantas cartas extras por quanto tempo?
+    lucro_cedo, _ = _lucro_no_mes(36)
+    cartas_extras_4anos = max(0, int(lucro_cedo // (parcela_por_carta * 48)))
+    meses_1_carta_extra = int(lucro_cedo // parcela_por_carta) if parcela_por_carta > 0 else 0
+
+    linhas = [
+        f"## Estratégia de Múltiplas Cartas — {numero_cartas} carta(s) de R$ {valor_credito_por_carta:,.0f}\n",
+        "### Visão Geral",
+        f"| Métrica | Valor |",
+        f"|---|---|",
+        f"| Aporte mensal total | R$ {parcela_total:,.0f}/mês |",
+        f"| Crédito total em jogo | R$ {credito_total:,.0f} |",
+        f"| Probabilidade mensal (ao menos 1 sorteio) | {prob_1_no_mes*100:.2f}% |",
+        f"| **Fator de diversificação vs 1 carta** | **{numero_cartas}× mais chances** |",
+        f"| Mês esperado da 1ª contemplação | ~{mes_esperado_1a}° mês |",
+        f"| % sorteado do grupo | {pct_sorteado_grupo:.0f}% |",
+        "",
+        "### Lucro Estimado da 1ª Carta Contemplada por Cenário",
+        "| Cenário | Mês | Total Investido | Lucro Líquido | ROI |",
+        "|---|---|---|---|---|",
+    ]
+    for label, mes in cenarios:
+        lucro, roi = _lucro_no_mes(mes)
+        _, ti_ref = 0, 0
+        c2, p2, ti2 = valor_credito_por_carta, parcela_por_carta, 0.0
+        for m in range(1, mes + 1):
+            if m > 1 and (m - 1) % 12 == 0:
+                c2 *= (1 + incc); p2 *= (1 + incc)
+            ti2 += p2
+        sinal = "✅" if lucro > 0 else "🔴"
+        linhas.append(f"| {label} | {mes}° | R$ {ti2:,.0f} | {sinal} R$ {lucro:,.0f} | {roi:.1f}% |")
+
+    linhas += [
+        "",
+        f"### Efeito Bola de Neve (com lucro de contemplação no 3° ano)",
+        f"- Lucro líquido estimado na 1ª venda (36° mês): **R$ {lucro_cedo:,.0f}**",
+        f"- Com esse lucro, é possível financiar **1 carta extra** por até **{meses_1_carta_extra} meses** (parcela R$ {parcela_por_carta:.0f})",
+    ]
+    if cartas_extras_4anos >= 1:
+        linhas.append(
+            f"- Ou financiar **{cartas_extras_4anos} carta(s) extra(s)** por ~48 meses sem colocar dinheiro novo"
+        )
+    linhas.append(
+        f"- Reinvestindo cada lucro em novas cartas: o número de cartas em andamento cresce sem aumentar o aporte próprio"
+    )
+
+    # Risk/recommendation
+    linhas += [
+        "",
+        "### Recomendação",
+    ]
+    if pct_sorteado_grupo >= 50:
+        linhas.append(
+            f"✅ **Grupo adequado** ({pct_sorteado_grupo:.0f}% sorteado) + diversificação de {numero_cartas} cartas. "
+            f"A probabilidade de contemplação cedo é favorável. Mantenha apenas o que pode pagar mensalmente (R$ {parcela_total:,.0f})."
+        )
+    elif pct_sorteado_grupo >= 20:
+        linhas.append(
+            f"⚠️ **Grupo razoável** ({pct_sorteado_grupo:.0f}% sorteado). Com {numero_cartas} cartas o risco de contemplação tardia diminui, "
+            f"mas o período de lucro pode ser mais estreito. Valide o histórico de entregas do grupo."
+        )
+    else:
+        linhas.append(
+            f"🔴 **Grupo ruim** ({pct_sorteado_grupo:.0f}% sorteado) — mesmo com {numero_cartas} cartas, "
+            f"a maioria das contemplações tende a cair no período final, onde o lucro é mínimo ou negativo. Busque outro grupo."
+        )
+    linhas.append(
+        f"\n> **Regra de ouro:** nunca fazer mais cartas do que consegue pagar mensalmente por longo prazo. "
+        f"Cancelamento antes da contemplação implica perda de ~50% dos valores pagos."
+    )
+    return "\n".join(linhas)
+
+
+def _exec_simular_venda_carta(
+    mes_contemplacao: int,
+    valor_credito: float = 100_000.0,
+    parcela: float = 338.0,
+    prazo_meses: int = 220,
+    agio_pct: float = 25.0,
+    incc_anual_pct: float = 6.0,
+    cdi_anual_pct: float = 14.2,
+    taxa_adm_pct: float = 24.2,
+    lance_embutido_parcelas: int = 44,
+) -> str:
+    if mes_contemplacao < 1 or mes_contemplacao > prazo_meses:
+        return f"Erro: mês {mes_contemplacao} inválido para grupo com prazo de {prazo_meses} meses (1–{prazo_meses})."
+
+    incc = incc_anual_pct / 100
+    cdi_mensal = (1 + cdi_anual_pct / 100) ** (1 / 12) - 1
+    # Lance embutido usa 44 parcelas do crédito CORRIGIDO pelo INCC: H = B × (1 − (1+taxa_adm)×parcelas/prazo)
+    lance_factor = 1 - (1 + taxa_adm_pct / 100) * lance_embutido_parcelas / prazo_meses
+
+    c = valor_credito
+    p = parcela
+    ti = 0.0
+    cdi_acc = 0.0
+    be_s: int | None = None
+    be_l: int | None = None
+    cdi_vence: int | None = None
+    snap: dict = {}
+
+    for m in range(1, prazo_meses + 1):
+        if m > 1 and (m - 1) % 12 == 0:
+            c *= (1 + incc)
+            p *= (1 + incc)
+        ti += p
+        cdi_acc = (cdi_acc + p) * (1 + cdi_mensal)
+
+        ll_s = c * (agio_pct / 100) - ti
+        ll_l = c * lance_factor * (agio_pct / 100) - ti
+        roi_s_m = ll_s / ti * 100
+        roi_l_m = ll_l / ti * 100
+        roi_cdi_m = (cdi_acc - ti) / ti * 100
+
+        if m == mes_contemplacao:
+            snap = {
+                "ti": ti, "c": c,
+                "ll_s": ll_s, "roi_s": roi_s_m,
+                "credito_lance": c * lance_factor,
+                "ll_l": ll_l, "roi_l": roi_l_m,
+                "lucro_cdi": cdi_acc - ti, "roi_cdi": roi_cdi_m,
+            }
+
+        if be_l is None and ll_l < 0:
+            be_l = m
+        if be_s is None and ll_s < 0:
+            be_s = m
+        if cdi_vence is None and roi_cdi_m >= roi_s_m and roi_s_m >= 0:
+            cdi_vence = m
+
+        if m > mes_contemplacao and be_s is not None and be_l is not None and cdi_vence is not None:
+            break
+
+    ti = snap["ti"]
+    c_mes = snap["c"]
+    ll_s = snap["ll_s"]
+    roi_s = snap["roi_s"]
+    c_lance = snap["credito_lance"]
+    ll_l = snap["ll_l"]
+    roi_l = snap["roi_l"]
+    lucro_cdi = snap["lucro_cdi"]
+    roi_cdi = snap["roi_cdi"]
+
+    def _zona(lucro: float, roi: float) -> str:
+        if lucro <= 0:
+            return "🔴 VERMELHA"
+        if roi > 25:
+            return "🟢 VERDE"
+        return "🟡 AMARELA"
+
+    zona_s = _zona(ll_s, roi_s)
+    zona_l = _zona(ll_l, roi_l)
+
+    if "VERMELHA" in zona_s and "VERMELHA" in zona_l:
+        rec = "🔴 **NÃO VENDER** — ambos os cenários em prejuízo. Use o crédito para adquirir o bem diretamente."
+    elif "VERDE" in zona_s and "VERDE" in zona_l:
+        rec = "✅ **VENDER** — excelente momento. Ambos os cenários em zona verde com ROI sólido."
+    elif "VERDE" in zona_s and "VERMELHA" in zona_l:
+        rec = "✅ **SORTEIO: vender** — ROI sólido. 🔴 **LANCE EMBUTIDO: usar o crédito** — ultrapassou o break-even, a venda dará prejuízo."
+    elif "AMARELA" in zona_s and "VERMELHA" in zona_l:
+        rec = "⚠️ **SORTEIO: vender se urgente** — ainda lucrativo, mas margem estreita. 🔴 **LANCE: não vender** — em prejuízo."
+    else:
+        rec = "⚠️ **Avaliar urgência** — rentabilidade positiva, mas reduzida. Fechar rápido se decidir vender."
+
+    linhas = [
+        f"## Simulador Venda da Carta — {mes_contemplacao}° Mês\n",
+        f"**Crédito:** R$ {valor_credito:,.0f} | **Parcela:** R$ {parcela:.0f} | "
+        f"**Ágio:** {agio_pct:.0f}% | **INCC:** {incc_anual_pct:.0f}%a.a. | **CDI:** {cdi_anual_pct:.1f}%a.a.",
+        f"**Crédito no {mes_contemplacao}° mês** (após correção INCC): R$ {c_mes:,.0f}\n",
+        "### Resultado no Mês de Contemplação",
+        "| Cenário | Total Investido | Lucro Bruto | Lucro Líquido | ROI | Zona |",
+        "|---|---|---|---|---|---|",
+        f"| 🎯 **Sorteio** | R$ {ti:,.0f} | R$ {c_mes * (agio_pct / 100):,.0f} | R$ {ll_s:,.0f} | {roi_s:.1f}% | {zona_s} |",
+        f"| 🔵 **Lance Embutido** | R$ {ti:,.0f} | R$ {c_lance * (agio_pct / 100):,.0f} | R$ {ll_l:,.0f} | {roi_l:.1f}% | {zona_l} |",
+        f"| 📈 **CDI** ({cdi_anual_pct}%a.a.) | R$ {ti:,.0f} | R$ {lucro_cdi:,.0f} | — | {roi_cdi:.1f}% | — |",
+        "",
+        "### Break-even e Cruzamentos",
+    ]
+
+    if be_l is not None:
+        dist = mes_contemplacao - be_l
+        nota = f" ← **{abs(dist)} mês(es) {'após' if dist >= 0 else 'antes do'} break-even**" if abs(dist) <= 6 else ""
+        linhas.append(f"- **Lance Embutido:** lucrativo até o {be_l - 1}°, prejuízo a partir do **{be_l}° mês**{nota}")
+    if be_s is not None:
+        dist = mes_contemplacao - be_s
+        nota = f" ← **{abs(dist)} mês(es) {'após' if dist >= 0 else 'antes do'} break-even**" if abs(dist) <= 6 else ""
+        linhas.append(f"- **Sorteio:** lucrativo até o {be_s - 1}°, prejuízo a partir do **{be_s}° mês**{nota}")
+    if cdi_vence is not None:
+        linhas.append(f"- **CDI supera o Sorteio** a partir do **{cdi_vence}° mês** ({cdi_anual_pct}%a.a.)")
+
+    linhas.append(f"\n### Recomendação\n{rec}")
+    return "\n".join(linhas)
+
+
 # ── Dispatcher de tools ───────────────────────────────────────────────────────
 
 def execute_tool(name: str, inputs: dict) -> str:
@@ -560,6 +984,10 @@ def execute_tool(name: str, inputs: dict) -> str:
             return _exec_verificar_red_flags(**inputs)
         if name == "comparar_investimentos":
             return _exec_comparar_investimentos(**inputs)
+        if name == "calcular_multiplas_cartas":
+            return _exec_calcular_multiplas_cartas(**inputs)
+        if name == "simular_venda_carta":
+            return _exec_simular_venda_carta(**inputs)
         return f"Tool desconhecida: {name}"
     except Exception as e:
         return f"Erro ao executar '{name}': {type(e).__name__}: {e}"
@@ -691,6 +1119,72 @@ TIR anual    = (1 + rent. nominal) ^ (12 / meses) − 1
 """
         )
 
+    with st.expander("📅 Simulador Venda da Carta — decida o momento certo para vender"):
+        st.markdown(
+            """
+**O que faz:** Simula a rentabilidade da venda de uma carta contemplada em qualquer mês do grupo,
+usando o modelo da planilha Ademicon ("Venda da Carta com Lucro"). Compara três cenários —
+Sorteio, Lance Embutido e CDI benchmark — e classifica o momento como **VERDE / AMARELA / VERMELHA**.
+
+**Os 3 cenários simulados:**
+
+| Cenário | Como funciona | O que calcula |
+|---|---|---|
+| 🎯 **Sorteio** | Crédito cheio × ágio − total investido | Lucro líquido e ROI se contemplado por sorteio |
+| 🔵 **Lance Embutido** | Crédito reduzido (44 parcelas antecipadas) × ágio − total investido | ROI com crédito efetivo ~25% menor |
+| 📈 **CDI** | Parcelas aplicadas a juros compostos | Benchmark: quanto renderia investir as mesmas parcelas |
+
+**Regra INCC:** crédito e parcela são corrigidos em +6% a cada 12 meses — o crédito no 91° mês já é
+~R$ 143.000, não R$ 100.000. O simulador aplica isso automaticamente.
+
+**Lance Embutido — por que o crédito encolhe:**
+```
+parcela_original = R$ 100.000 × (1 + 24,2%) ÷ 220 = R$ 564,55
+crédito_efetivo  = R$ 100.000 − R$ 564,55 × 44 = ~R$ 75.160
+```
+Você paga taxa administrativa sobre R$ 100.000, mas o crédito disponível para venda é só R$ 75.160.
+
+**Pontos de break-even (parâmetros padrão Ademicon):**
+
+| Modalidade | Último mês lucrativo | Primeiro mês de prejuízo |
+|---|---|---|
+| Lance Embutido | 65° mês (ROI +0,1%) | **66° mês** (ROI −1,7%) |
+| Sorteio | 90° mês (ROI +1,3%) | **91° mês** (ROI −0,03%) |
+| CDI supera ambos | — | **~63° mês** |
+
+**Zonas de decisão:**
+
+| Zona | Período | Recomendação |
+|---|---|---|
+| 🟢 **VERDE** | Até o 48° mês | Vender sem hesitar — ROI acima de 26% |
+| 🟡 **AMARELA** | 49°–65° (Lance) / 49°–90° (Sorteio) | Ainda lucrativo; fechar rápido se decidir |
+| 🔴 **VERMELHA** | 66°+ (Lance) / 91°+ (Sorteio) | Não vender — usar o crédito diretamente |
+
+**Marcos quantitativos de referência (parâmetros padrão):**
+
+| Mês | Total Pago | ROI Sorteio | ROI Lance | ROI CDI |
+|---|---|---|---|---|
+| 1° | R$ 338 | 7.296% | 5.459% | ~1% |
+| 12° | R$ 4.056 | 516% | 363% | 6,3% |
+| 48° | R$ 17.743 | 68% | 26% | 24,4% |
+| 60° | R$ 22.864 | 38% | 3,8% | 29,6% |
+| 66° | R$ 25.578 | 30,8% | **−1,7%** | 32,1% |
+| 91° | R$ 37.603 | **−0,03%** | −24,9% | 41,6% |
+
+**Quando usar:** Ao ser contemplado e precisar decidir entre vender a carta (lucrar o ágio)
+ou usar o crédito para adquirir o bem. O mês de contemplação é o fator determinante.
+
+**Parâmetros personalizáveis:** valor do crédito, parcela, prazo, % de ágio, INCC, CDI, taxa adm e parcelas do lance embutido.
+
+**Exemplos de pergunta:**
+> *"Fui contemplado no 45° mês em um grupo Ademicon de R$ 100k. Vale vender a carta?"*
+
+> *"Tenho uma carta Ademicon, fui contemplado no 70° mês. Ainda dá lucro vender?"*
+
+> *"Grupo de R$ 200k, parcela R$ 700, contemplei no 30° mês, ágio atual de 20%. Simula pra mim."*
+"""
+        )
+
     with st.expander("🧾 Calcular IR (GCAP) — apure o imposto e o prazo do DARF"):
         st.markdown(
             """
@@ -738,6 +1232,104 @@ TIR anual    = (1 + rent. nominal) ^ (12 / meses) − 1
 
 **Exemplo de pergunta:**
 > *"O vendedor prometeu contemplação em 6 meses e mencionou lance embutido de 50%. Tem problema?"*
+"""
+        )
+
+    with st.expander("🎯 Estratégia do Método — Múltiplas Cartas, Bola de Neve e Critérios de Escolha"):
+        st.markdown(
+            """
+**O que é:** A estratégia de múltiplas cartas pequenas em vez de uma carta grande, popularizada pelo
+"Método Jornada da Tranquilidade Financeira" — base para maximizar lucro e reduzir dependência da sorte.
+
+---
+
+#### Por que várias cartas menores?
+
+| Abordagem | Cartas | Aporte/mês | Probabilidade de contemplação |
+|---|---|---|---|
+| 1 carta de R$ 500k | 1 | R$ 3.220 | 1× |
+| 5 cartas de R$ 100k | 5 | R$ 3.220 | **5×** |
+
+O aporte mensal é o mesmo, mas 5 cartas têm 5× mais chances de contemplação.
+Cada carta que contempla é vendida com lucro — sem esperar todas.
+
+---
+
+#### Efeito Bola de Neve
+
+```
+Início: 5 cartas  →  1ª contempla (mês 10)  →  vende por R$ 30k
+                                            ↓
+                        Reinveste: paga 2 cartas extras com o lucro
+                                            ↓
+                        Agora: 6–7 cartas em andamento sem aporte extra
+                                            ↓
+                        2ª contempla (mês 18)  →  R$ 30k+ reinvestido...
+```
+
+O ciclo se acelera: lucros das primeiras cartas financiam novas cartas — sem aumentar o aporte próprio.
+
+---
+
+#### 3 Critérios para Escolha da Administradora
+
+| Critério | O que verificar | Por que importa |
+|---|---|---|
+| **1. Junção entre grupos diferentes** | A administradora permite unir créditos de grupos distintos? | Sem isso, não dá para montar créditos maiores para compradores |
+| **2. Volume de cartas no mercado** | Há dezenas/centenas de cartas contempladas por mês? | Precisam existir outras cartas para juntar com a sua |
+| **3. Máximo de usos permitidos** | Novo, usado, construção, reforma e terreno? | Mais usos = mais compradores potenciais = mais liquidez |
+
+> ⚠️ A **taxa de administração** não é o critério determinante. O que importa é contemplar
+> cedo em grupo bom e ter liquidez para vender. Taxas aparentemente menores muitas vezes
+> escondem cobranças (fundo reserva, taxa de adesão) ou vêm de grupos com métricas ruins.
+
+---
+
+#### Regras Operacionais
+
+**NÃO dar lance em carta destinada à venda**
+O lance antecipa pagamentos ao grupo e reduz a margem. Cota para trade = aguardar sorteio ou usar lance livre de outros como combustível para o grupo.
+
+**FGTS não permite venda da carta**
+Se você usar FGTS no consórcio, é obrigatório comprar o imóvel — a carta fica ilíquida para trade.
+
+**Cancelamento = ~50% de perda**
+Se cancelar antes de contemplar: perda de ~50%+ dos valores amortizados (descontada a taxa adm paga) + multa + taxa de reposição + aguarda sorteio como "cancelado" para receber de volta.
+Regra: só faça o número de cartas que consegue pagar mensalmente por longo prazo.
+
+**Seguro prestamista**
+Geralmente incluído na prestação. Em caso de falecimento ou invalidez permanente, quita o saldo devedor de todas as cartas. Recomendável manter.
+
+---
+
+#### Estratégia por Período de Contemplação
+
+| Período | Estratégia recomendada |
+|---|---|
+| Até o 6° ano (72 meses) | Vender carta com lucro → reinvestir (bola de neve) |
+| 7°–13° ano | Usar crédito para imóvel com aluguel pagando o saldo; OU deixar investido em renda fixa rendendo sobre capital acumulado |
+| Acima do 13° ano | Crédito corrigido pelo INCC ainda supera total pago — use o crédito diretamente |
+
+---
+
+#### Preço de Venda da Carta Contemplada
+
+A carta é precificada como crédito com CET equivalente a **7%–8% a.a.** (~0,6%/mês) — mais barato que
+qualquer financiamento bancário. Isso gera demanda estrutural permanente de compradores.
+
+Comprador típico: quem quer imóvel mas tem dificuldade de comprovar renda para financiamento
+(parcela do consórcio é menor), quem não quer se descapitalizar pagando à vista,
+e quem precisa de crédito para construção, reforma ou terreno.
+
+---
+
+#### Exemplo de Pergunta
+
+> *"Tenho R$ 3.000/mês para investir em consórcio. Quantas cartas devo fazer e qual o efeito da diversificação?"*
+
+> *"Se eu vender minha primeira carta por R$ 30.000, quantas cartas extras consigo pagar com esse lucro?"*
+
+> *"Fui contemplado no 70° mês. Vale a pena vender ou usar o crédito?"*
 """
         )
 
