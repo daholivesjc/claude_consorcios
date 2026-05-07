@@ -1626,14 +1626,17 @@ def main() -> None:
                 st.markdown(
                     "Olá! Sou o **ClaudeConsórcios**, seu especialista em consórcios brasileiros e "
                     "trade de cartas contempladas.\n\n"
-                    "Posso te ajudar com:\n"
-                    "- 🔍 **Auditar grupos** — calcular % sorteado, entregas/mês e identificar grupos deficitários\n"
-                    "- 💰 **Calcular ágio** — bruto, líquido (após IR) e rentabilidade anualizada\n"
-                    "- 🧾 **Apurar GCAP/IR** — ganho de capital, isenção de R$35k, prazo do DARF\n"
-                    "- ⚠️ **Verificar red flags** — sinais de alerta em ofertas e contratos\n"
-                    "- 📊 **Comparar alternativas** — consórcio vs renda fixa vs financiamento\n"
-                    "- 📋 **Explicar o processo** — do trade completo às regras jurídicas (Lei 11.795/2008)\n\n"
-                    "Como posso ajudar? Pode descrever seu caso ou usar os botões rápidos na barra lateral."
+                    "**Funcionalidades disponíveis:**\n\n"
+                    "| # | Funcionalidade | O que faz |\n"
+                    "|---|----------------|-----------|\n"
+                    "| 🔍 | **Auditar Grupo** | Calcula % sorteado, entregas/mês e identifica se o grupo é saudável antes de assinar |\n"
+                    "| 💰 | **Calcular Ágio** | Apura a rentabilidade real do trade: ágio bruto, líquido (após IR) e taxa anualizada |\n"
+                    "| 📅 | **Simulador Venda da Carta** | Simula mês a mês o ROI de vender uma carta contemplada — decide o momento certo para vender |\n"
+                    "| 🧾 | **Calcular IR (GCAP)** | Apura o ganho de capital, verifica isenção de R$35k e calcula o prazo do DARF |\n"
+                    "| ⚠️ | **Verificar Red Flags** | Identifica armadilhas em ofertas e contratos (lance embutido, grupos deficitários, cláusulas abusivas) |\n"
+                    "| 🎯 | **Estratégia do Método** | Explica múltiplas cartas, efeito bola de neve e os 3 critérios para escolher administradoras |\n"
+                    "| 📊 | **Comparar Investimentos** | Compara consórcio vs renda fixa vs financiamento com base no seu objetivo |\n\n"
+                    "Descreva seu caso ou use os botões rápidos na barra lateral."
                 )
 
         for msg in st.session_state.messages:
